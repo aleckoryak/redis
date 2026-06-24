@@ -4,7 +4,12 @@ import jakarta.validation.Valid;
 import org.example.publishhouse.api.ArticleCreateRequest;
 import org.example.publishhouse.api.ArticleResponse;
 import org.example.publishhouse.api.ArticleUpdateRequest;
+import org.example.publishhouse.config.RedisCacheConfig;
 import org.example.publishhouse.service.PublishhouseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +25,14 @@ import java.util.List;
 @RestController
 public class ArticleController {
 
-    private final PublishhouseService publishhouseService;
+    private static final Logger log = LoggerFactory.getLogger(ArticleController.class);
 
-    public ArticleController(PublishhouseService publishhouseService) {
+    private final PublishhouseService publishhouseService;
+    private final CacheManager cacheManager;
+
+    public ArticleController(PublishhouseService publishhouseService, CacheManager cacheManager) {
         this.publishhouseService = publishhouseService;
+        this.cacheManager = cacheManager;
     }
 
     @PostMapping("/articles")
@@ -55,6 +64,11 @@ public class ArticleController {
 
     @GetMapping("/articles/{id}")
     public ArticleResponse getArticleById(@PathVariable("id") Long id) {
-        return publishhouseService.getArticleById(id);
+        String cacheKey = "article::" + id;
+        Cache cache = cacheManager.getCache(RedisCacheConfig.ARTICLE_BY_ID_CACHE);
+        if (cache != null && cache.get(cacheKey) != null) {
+            log.info("Serving article id={} from Redis cache", id);
+        }
+        return publishhouseService.getCachedArticleById(id);
     }
 }

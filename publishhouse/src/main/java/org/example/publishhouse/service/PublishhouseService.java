@@ -1,5 +1,6 @@
 package org.example.publishhouse.service;
 
+import org.example.publishhouse.config.RedisCacheConfig;
 import org.example.publishhouse.api.ArticleCreateRequest;
 import org.example.publishhouse.api.ArticleResponse;
 import org.example.publishhouse.api.ArticleUpdateRequest;
@@ -9,6 +10,10 @@ import org.example.publishhouse.domain.Article;
 import org.example.publishhouse.domain.Comment;
 import org.example.publishhouse.repository.ArticleRepository;
 import org.example.publishhouse.repository.CommentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +24,8 @@ import java.util.List;
 
 @Service
 public class PublishhouseService {
+
+    private static final Logger log = LoggerFactory.getLogger(PublishhouseService.class);
 
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
@@ -36,6 +43,7 @@ public class PublishhouseService {
     }
 
     @Transactional
+    @CacheEvict(value = RedisCacheConfig.ARTICLE_BY_ID_CACHE, key = "'article::' + #p0")
     public ArticleResponse updateArticle(Long articleId, ArticleUpdateRequest request) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found: " + articleId));
@@ -48,6 +56,7 @@ public class PublishhouseService {
     }
 
     @Transactional
+    @CacheEvict(value = RedisCacheConfig.ARTICLE_BY_ID_CACHE, key = "'article::' + #p0", beforeInvocation = true)
     public void deleteArticle(Long articleId) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found: " + articleId));
@@ -71,6 +80,7 @@ public class PublishhouseService {
     }
 
     @Transactional
+    @CacheEvict(value = RedisCacheConfig.ARTICLE_BY_ID_CACHE, key = "'article::' + #p0")
     public CommentResponse createComment(Long articleId, CommentCreateRequest request) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found: " + articleId));
@@ -101,6 +111,13 @@ public class PublishhouseService {
         return articleRepository.findByArticleIdWithRating(id)
                 .map(this::toArticleResponse)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = RedisCacheConfig.ARTICLE_BY_ID_CACHE, key = "'article::' + #p0")
+    public ArticleResponse getCachedArticleById(Long id) {
+        log.info("Cache miss for article id={}, retrieving data from DB", id);
+        return getArticleById(id);
     }
 
     private ArticleResponse toArticleResponse(ArticleRatingView view) {
