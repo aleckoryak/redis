@@ -1,0 +1,195 @@
+{
+  "info": {
+    "_postman_id": "9dd37c5f-0d7f-4359-9664-8c62351000e2",
+    "name": "redis_pet_project",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "356894"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "articleId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "publishhouse",
+      "item": [
+        {
+          "name": "create_article",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman article\",\n  \"text\": \"Created from Postman collection\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get_articles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get_article_by_id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{articleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{articleId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update_article",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated title\",\n  \"text\": \"Updated article text\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{articleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{articleId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete_article",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{articleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{articleId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create_comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Great article\",\n  \"score\": 88\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{articleId}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{articleId}}",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get_comments_by_article_id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{articleId}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{articleId}}",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get_trending",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trending"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
