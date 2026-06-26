@@ -53,17 +53,25 @@ Prewarm is not enabled by design. It can be added later by using `@CachePut` on 
 ## Run (from repository root)
 
 ```powershell
-mvn -pl publishhouse clean test compile spring-boot:run
+mvn clean test install spring-boot:run
 ```
 
 ## Test (from repository root)
 
 ```powershell
-mvn -pl publishhouse test
+mvn test
 ```
 
 ## Curl smoke flow (from repository root)
 
 ```powershell
 PowerShell -ExecutionPolicy Bypass -File "publishhouse/smoke-curl.ps1"
+```
+
+```powershell
+PowerShell (Invoke-WebRequest -Uri "http://localhost:8080/trending" -UseBasicParsing).Content
+```
+
+```bash
+curl.exe "http://localhost:8080/trending"
 ```
