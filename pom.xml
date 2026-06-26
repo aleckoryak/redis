@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>redis-types</module>
         <module>redis-app</module>
         <module>publishhouse</module>
     </modules>

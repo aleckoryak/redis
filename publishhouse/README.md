@@ -53,7 +53,7 @@ Prewarm is not enabled by design. It can be added later by using `@CachePut` on 
 ## Run (from repository root)
 
 ```powershell
-mvn -pl publishhouse test clompile spring-boot:run
+mvn -pl publishhouse clean test compile spring-boot:run
 ```
 
 ## Test (from repository root)
